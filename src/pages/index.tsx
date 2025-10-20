@@ -1,115 +1,91 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+"use client";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import Marquee from "react-fast-marquee";
+import { SITE } from "@/lib/config";
 
 export default function Home() {
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20`}
-    >
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="3bg-black text-white">
+      {/* 1️⃣ Hero Section */}
+      <section className="relative w-full h-screen">
+        <video
+          className="absolute top-0 left-0 w-full h-full object-cover opacity-70"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-4">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-wider">
+            Welcome to {SITE.name}
+          </h1>
+          <p className="mt-4 text-lg md:text-2xl text-gray-300">
+            {SITE.tagline}
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* 2️⃣ Auto-Scrolling College Section */}
+      <section className="py-12 bg-gray-900 overflow-hidden">
+        <h2 className="text-center text-3xl font-semibold mb-8">
+          {SITE.name} is in every college 🌍
+        </h2>
+        <Marquee gradient={false} speed={60} pauseOnHover>
+          {[
+            "IIT Delhi",
+            "IIT Bombay",
+            "NIT Trichy",
+            "BITS Pilani",
+            "DTU",
+            "NSUT",
+            "DU",
+            "IIT Madras",
+          ].map((college, i) => (
+            <span
+              key={i}
+              className="mx-8 text-xl font-medium text-gray-300 hover:text-white transition"
+            >
+              {college}
+            </span>
+          ))}
+        </Marquee>
+      </section>
+
+      {/* 3️⃣ What WAVE Does */}
+      <section className="py-16 bg-black text-center">
+        <h2 className="text-4xl font-bold mb-6">What {SITE.name} Does</h2>
+        <p className="max-w-2xl mx-auto text-gray-400 mb-10">
+          {SITE.name} connects students across colleges to grow together in
+          leadership, learning, and spirituality. We organize interactive
+          sessions, workshops, and community projects that inspire positive
+          change and holistic growth.
+        </p>
+
+        <div className="grid md:grid-cols-3 gap-6 px-6 md:px-20">
+          {[
+            { title: "Leadership Events", desc: "Empowering youth through guidance and teamwork." },
+            { title: "Skill Workshops", desc: "Hands-on sessions for real-world learning." },
+            { title: "Spiritual Sessions", desc: "Balance your mind and soul through meditation." },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="bg-gray-800 rounded-2xl p-6 hover:bg-gray-700 transition"
+            >
+              <h3 className="text-2xl font-semibold mb-3">{item.title}</h3>
+              <p className="text-gray-400">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 🔜 Placeholder for Next Sections */}
+      <section className="py-16 text-center bg-gray-900">4️⃣ Events</section>
+      <section className="py-16 text-center bg-black">5️⃣ Testimonials</section>
+      <section className="py-16 text-center bg-gray-900">6️⃣ Gallery</section>
+      <section className="py-16 text-center bg-black">7️⃣ Join Us</section>
+      <section className="py-16 text-center bg-gray-900">8️⃣ Footer</section>
+    </main>
   );
 }
