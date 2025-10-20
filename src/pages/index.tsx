@@ -1,12 +1,25 @@
-"use client";
+import { Navbar } from "@/components/Navbar";
+import { EventsSection } from "@/components/EventsSection";
+import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { GallerySection } from "@/components/GallerySection";
+import { JoinSection } from "@/components/JoinSection";
+import { Footer } from "@/components/Footer";
 
 import Marquee from "react-fast-marquee";
 import { SITE } from "@/lib/config";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
-export default function Home() {
+const Index = () => {
+ 
+  useVisitorTracking(
+  "https://script.google.com/macros/s/AKfycbys7fzSQMSXUEA2v-8VdrfHWTRLIkfot84w2r2r0tzvs_WSd9ZdhAbzN2pfWbmMyhiX/exec"
+  );
+
   return (
-    <main className="3bg-black text-white">
-      {/* 1️⃣ Hero Section */}
+    <div className="min-h-screen">
+      <Navbar />
+
+      {/* Hero Section */}
       <section className="relative w-full h-screen">
         <video
           className="absolute top-0 left-0 w-full h-full object-cover opacity-70"
@@ -17,19 +30,19 @@ export default function Home() {
         >
           <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-wider">
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-wider text-white mb-6 animate-fade-in">
             Welcome to {SITE.name}
           </h1>
-          <p className="mt-4 text-lg md:text-2xl text-gray-300">
+          <p className="mt-4 text-xl md:text-3xl text-white/90 max-w-3xl">
             {SITE.tagline}
           </p>
         </div>
       </section>
 
-      {/* 2️⃣ Auto-Scrolling College Section */}
-      <section className="py-12 bg-gray-900 overflow-hidden">
-        <h2 className="text-center text-3xl font-semibold mb-8">
+      {/* College Marquee */}
+      <section className="py-12 bg-card overflow-hidden border-y border-border">
+        <h2 className="text-center text-2xl md:text-3xl font-semibold mb-8">
           {SITE.name} is in every college 🌍
         </h2>
         <Marquee gradient={false} speed={60} pauseOnHover>
@@ -42,10 +55,12 @@ export default function Home() {
             "NSUT",
             "DU",
             "IIT Madras",
+            "IIT Kharagpur",
+            "IIIT Delhi",
           ].map((college, i) => (
             <span
               key={i}
-              className="mx-8 text-xl font-medium text-gray-300 hover:text-white transition"
+              className="mx-8 text-xl font-medium text-foreground/70 hover:text-primary transition"
             >
               {college}
             </span>
@@ -53,39 +68,71 @@ export default function Home() {
         </Marquee>
       </section>
 
-      {/* 3️⃣ What WAVE Does */}
-      <section className="py-16 bg-black text-center">
-        <h2 className="text-4xl font-bold mb-6">What {SITE.name} Does</h2>
-        <p className="max-w-2xl mx-auto text-gray-400 mb-10">
-          {SITE.name} connects students across colleges to grow together in
-          leadership, learning, and spirituality. We organize interactive
-          sessions, workshops, and community projects that inspire positive
-          change and holistic growth.
-        </p>
+      {/* What WAVE Does */}
+      <section id="about" className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">What {SITE.name} Does</h2>
+            <p className="max-w-2xl mx-auto text-muted-foreground text-lg leading-relaxed">
+              {SITE.name} connects students across colleges to grow together in leadership, learning,
+              and spirituality. We organize interactive sessions, workshops, and community projects
+              that inspire positive change and holistic growth.
+            </p>
+          </div>
 
-        <div className="grid md:grid-cols-3 gap-6 px-6 md:px-20">
-          {[
-            { title: "Leadership Events", desc: "Empowering youth through guidance and teamwork." },
-            { title: "Skill Workshops", desc: "Hands-on sessions for real-world learning." },
-            { title: "Spiritual Sessions", desc: "Balance your mind and soul through meditation." },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="bg-gray-800 rounded-2xl p-6 hover:bg-gray-700 transition"
-            >
-              <h3 className="text-2xl font-semibold mb-3">{item.title}</h3>
-              <p className="text-gray-400">{item.desc}</p>
-            </div>
-          ))}
+          <div className="grid md:grid-cols-3 gap-8 px-6 md:px-20">
+            {[
+              {
+                title: "Leadership Events",
+                desc: "Empowering youth through guidance and teamwork.",
+                icon: "👥",
+              },
+              {
+                title: "Skill Workshops",
+                desc: "Hands-on sessions for real-world learning.",
+                icon: "💡",
+              },
+              {
+                title: "Spiritual Sessions",
+                desc: "Balance your mind and soul through meditation.",
+                icon: "🧘",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="group bg-card rounded-3xl p-8 shadow-lg border border-border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
+              >
+                <div className="text-5xl mb-4">{item.icon}</div>
+                <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
+                <p className="text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 🔜 Placeholder for Next Sections */}
-      <section className="py-16 text-center bg-gray-900">4️⃣ Events</section>
-      <section className="py-16 text-center bg-black">5️⃣ Testimonials</section>
-      <section className="py-16 text-center bg-gray-900">6️⃣ Gallery</section>
-      <section className="py-16 text-center bg-black">7️⃣ Join Us</section>
-      <section className="py-16 text-center bg-gray-900">8️⃣ Footer</section>
-    </main>
+      <EventsSection />
+      <TestimonialsSection />
+      <GallerySection />
+      <JoinSection />
+
+      {/* Donate Section */}
+      <section id="donate" className="py-20 bg-gradient-to-br from-secondary/10 to-primary/10">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Support Our Mission</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            Your contribution helps us organize more events, workshops, and reach more students
+            across the country. Every donation makes a difference!
+          </p>
+          <button className="bg-secondary hover:bg-secondary/90 text-foreground font-bold text-lg px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition-all">
+            Donate Now ❤️
+          </button>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
   );
-}
+};
+
+export default Index;
