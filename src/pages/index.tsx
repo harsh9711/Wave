@@ -1,6 +1,5 @@
-"use client"; // important if you're using Next.js app directory
+"use client";
 
-import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { EventsSection } from "@/components/EventsSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
@@ -12,13 +11,10 @@ import { SITE } from "@/lib/config";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const Index = () => {
-  useEffect(() => {
-     if (typeof window !== "undefined") {
-      useVisitorTracking(
-        "https://script.google.com/macros/s/AKfycbys7fzSQMSXUEA2v-8VdrfHWTRLIkfot84w2r2r0tzvs_WSd9ZdhAbzN2pfWbmMyhiX/exec"
-      );
-    }
-  }, []);
+  // ✅ Correct: call the hook at the top level (not inside useEffect)
+  useVisitorTracking(
+    "https://script.google.com/macros/s/AKfycbys7fzSQMSXUEA2v-8VdrfHWTRLIkfot84w2r2r0tzvs_WSd9ZdhAbzN2pfWbmMyhiX/exec"
+  );
 
   return (
     <div className="min-h-screen">
@@ -71,49 +67,6 @@ const Index = () => {
             </span>
           ))}
         </Marquee>
-      </section>
-
-      {/* What WAVE Does */}
-      <section id="about" className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">What {SITE.name} Does</h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground text-lg leading-relaxed">
-              {SITE.name} connects students across colleges to grow together in leadership, learning,
-              and spirituality. We organize interactive sessions, workshops, and community projects
-              that inspire positive change and holistic growth.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 px-6 md:px-20">
-            {[
-              {
-                title: "Leadership Events",
-                desc: "Empowering youth through guidance and teamwork.",
-                icon: "👥",
-              },
-              {
-                title: "Skill Workshops",
-                desc: "Hands-on sessions for real-world learning.",
-                icon: "💡",
-              },
-              {
-                title: "Spiritual Sessions",
-                desc: "Balance your mind and soul through meditation.",
-                icon: "🧘",
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="group bg-card rounded-3xl p-8 shadow-lg border border-border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
-              >
-                <div className="text-5xl mb-4">{item.icon}</div>
-                <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
-                <p className="text-muted-foreground">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       <EventsSection />
