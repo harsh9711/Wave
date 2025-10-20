@@ -12,7 +12,7 @@ import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const Index = () => {
    useVisitorTracking(
-    "https://script.google.com/macros/s/AKfycbw4_UWxESlt2P1b4xRZlspMlKaCa0xTF-qQKIM3RzsC8s7dFsmjA1igyYy4aLkWLp3f/exec"
+    "https://script.google.com/macros/s/AKfycbwdcyKcNEMs3j8mt8YLn2WWqkR-CINnOUyYLCCUGmBEjojrYqZQl4Jz_wCK6K_9-KLR/exec"
   );
 
   return (
