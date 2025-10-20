@@ -11,9 +11,8 @@ import { SITE } from "@/lib/config";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const Index = () => {
-  // ✅ Correct: call the hook at the top level (not inside useEffect)
-  useVisitorTracking(
-    "https://script.google.com/macros/s/AKfycbys7fzSQMSXUEA2v-8VdrfHWTRLIkfot84w2r2r0tzvs_WSd9ZdhAbzN2pfWbmMyhiX/exec"
+   useVisitorTracking(
+    "https://script.google.com/macros/s/AKfycbw4_UWxESlt2P1b4xRZlspMlKaCa0xTF-qQKIM3RzsC8s7dFsmjA1igyYy4aLkWLp3f/exec"
   );
 
   return (
