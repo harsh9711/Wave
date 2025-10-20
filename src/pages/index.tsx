@@ -1,19 +1,24 @@
+"use client"; // important if you're using Next.js app directory
+
+import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { EventsSection } from "@/components/EventsSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { GallerySection } from "@/components/GallerySection";
 import { JoinSection } from "@/components/JoinSection";
 import { Footer } from "@/components/Footer";
-
 import Marquee from "react-fast-marquee";
 import { SITE } from "@/lib/config";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const Index = () => {
- 
-  useVisitorTracking(
-  "https://script.google.com/macros/s/AKfycbys7fzSQMSXUEA2v-8VdrfHWTRLIkfot84w2r2r0tzvs_WSd9ZdhAbzN2pfWbmMyhiX/exec"
-  );
+  useEffect(() => {
+     if (typeof window !== "undefined") {
+      useVisitorTracking(
+        "https://script.google.com/macros/s/AKfycbys7fzSQMSXUEA2v-8VdrfHWTRLIkfot84w2r2r0tzvs_WSd9ZdhAbzN2pfWbmMyhiX/exec"
+      );
+    }
+  }, []);
 
   return (
     <div className="min-h-screen">
