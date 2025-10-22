@@ -9,9 +9,26 @@ interface VisitorData {
     referrer: string;
     language: string;
     timezone: string;
+    pageUrl: string;
+    consentGiven: boolean;
+    userInfo?: {
+        name?: string;
+        email?: string;
+        age?: string;
+        gender?: string;
+        interests?: string[];
+    };
 }
 
-export const useVisitorTracking = (googleSheetsWebhookUrl?: string) => {
+/**
+  * @param googleSheetsWebhookUrl - Webhook endpoint
+ * @param userInfo - Optional user-provided info (only if consent given)
+ */
+export const useVisitorTracking = (
+    googleSheetsWebhookUrl?: string,
+    userInfo?: VisitorData["userInfo"],
+    consentGiven: boolean = false
+) => {
     const trackedRef = useRef(false);
     const startTimeRef = useRef(Date.now());
 
@@ -21,15 +38,17 @@ export const useVisitorTracking = (googleSheetsWebhookUrl?: string) => {
 
         const visitorData: VisitorData = {
             timestamp: new Date().toISOString(),
-            timeOnSite: 0,  
+            timeOnSite: 0,
             userAgent: navigator.userAgent,
             screenResolution: `${window.screen.width}x${window.screen.height}`,
             referrer: document.referrer || "Direct Visit",
             language: navigator.language,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            pageUrl: window.location.href,
+            consentGiven,
+            userInfo: consentGiven ? userInfo : undefined, // Only include if consented
         };
 
-        // On unload, calculate total time spent
         const handleUnload = () => {
             visitorData.timeOnSite = Math.floor((Date.now() - startTimeRef.current) / 1000);
             navigator.sendBeacon(googleSheetsWebhookUrl, JSON.stringify(visitorData));
@@ -37,15 +56,13 @@ export const useVisitorTracking = (googleSheetsWebhookUrl?: string) => {
 
         window.addEventListener("beforeunload", handleUnload);
 
-        // Send initial visit data
+        // Send initial data
         fetch(googleSheetsWebhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(visitorData),
         });
 
-        return () => {
-            window.removeEventListener("beforeunload", handleUnload);
-        };
-    }, [googleSheetsWebhookUrl]);
+        return () => window.removeEventListener("beforeunload", handleUnload);
+    }, [googleSheetsWebhookUrl, userInfo, consentGiven]);
 };
