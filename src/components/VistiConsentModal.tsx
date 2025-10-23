@@ -51,9 +51,11 @@ export default function VisitorConsentModal({ webhookUrl }: VisitorConsentModalP
         try {
             await fetch(webhookUrl, {
                 method: "POST",
+                mode: "cors", 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(visitorData),
             });
+
             console.log("✅ Data sent successfully:", visitorData);
         } catch (error) {
             console.error("❌ Failed to send data:", error);
