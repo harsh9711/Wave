@@ -49,17 +49,18 @@ export default function VisitorConsentModal({ webhookUrl }: VisitorConsentModalP
         };
 
         try {
-            await fetch(webhookUrl, {
-                method: "POST",
-                mode: "cors", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(visitorData),
-            });
+           await fetch("/api/visitor", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(visitorData),
+});
 
-            console.log("✅ Data sent successfully:", visitorData);
+
+            console.log("✅ Data sent to MongoDB:", visitorData);
         } catch (error) {
             console.error("❌ Failed to send data:", error);
         }
+
     };
 
     if (!show) return null;

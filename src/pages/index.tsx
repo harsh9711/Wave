@@ -50,7 +50,7 @@ const Index = () => {
       </section>
 
       {/* ✅ Use the consent modal */}
-      <VisitorConsentModal webhookUrl="https://script.google.com/macros/s/AKfycbzFfHGNyag01Do2HNtEn6ykYnj8Oiu4U6yxTjiIlwMhfIBIxo3tBNGp_ABhGBRvg--a/exec" />
+      <VisitorConsentModal webhookUrl="https://script.google.com/macros/s/AKfycbzqp3q66hYmnGs6CRcM3pj42knX7Z6Oxu_9-UpZSNNw1uuRzuOmxK1rOnQrlT6H2org/exec" />
 
       {/* College Marquee */}
       <section className="py-12 bg-card overflow-hidden border-y border-border">
