@@ -1,4 +1,3 @@
-// /hooks/useVisitorTracking.ts
 import { useEffect, useRef } from "react";
 
 interface VisitorData {
@@ -9,60 +8,44 @@ interface VisitorData {
     referrer: string;
     language: string;
     timezone: string;
-    pageUrl: string;
-    consentGiven: boolean;
-    userInfo?: {
-        name?: string;
-        email?: string;
-        age?: string;
-        gender?: string;
-        interests?: string[];
-    };
+    name?: string;
+    email?: string;
+    age?: string;
 }
 
-/**
-  * @param googleSheetsWebhookUrl - Webhook endpoint
- * @param userInfo - Optional user-provided info (only if consent given)
- */
 export const useVisitorTracking = (
-    googleSheetsWebhookUrl?: string,
-    userInfo?: VisitorData["userInfo"],
-    consentGiven: boolean = false
+    webhookUrl: string,
+    userInfo?: { name?: string; email?: string; age?: string },
+    enabled: boolean = false
 ) => {
     const trackedRef = useRef(false);
     const startTimeRef = useRef(Date.now());
 
     useEffect(() => {
-        if (trackedRef.current || !googleSheetsWebhookUrl) return;
+        if (!enabled || trackedRef.current) return;
         trackedRef.current = true;
 
-        const visitorData: VisitorData = {
-            timestamp: new Date().toISOString(),
-            timeOnSite: 0,
-            userAgent: navigator.userAgent,
-            screenResolution: `${window.screen.width}x${window.screen.height}`,
-            referrer: document.referrer || "Direct Visit",
-            language: navigator.language,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            pageUrl: window.location.href,
-            consentGiven,
-            userInfo: consentGiven ? userInfo : undefined, // Only include if consented
+        const sendVisitorData = () => {
+            const timeOnSite = Math.round((Date.now() - startTimeRef.current) / 1000);
+            const visitorData: VisitorData = {
+                timestamp: new Date().toISOString(),
+                timeOnSite,
+                userAgent: navigator.userAgent,
+                screenResolution: `${window.screen.width}x${window.screen.height}`,
+                referrer: document.referrer || "Direct",
+                language: navigator.language,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                ...userInfo,
+            };
+
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(visitorData),
+            }).catch((err) => console.error("Error sending visitor data:", err));
         };
 
-        const handleUnload = () => {
-            visitorData.timeOnSite = Math.floor((Date.now() - startTimeRef.current) / 1000);
-            navigator.sendBeacon(googleSheetsWebhookUrl, JSON.stringify(visitorData));
-        };
-
-        window.addEventListener("beforeunload", handleUnload);
-
-        // Send initial data
-        fetch(googleSheetsWebhookUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(visitorData),
-        });
-
-        return () => window.removeEventListener("beforeunload", handleUnload);
-    }, [googleSheetsWebhookUrl, userInfo, consentGiven]);
+        window.addEventListener("beforeunload", sendVisitorData);
+        return () => window.removeEventListener("beforeunload", sendVisitorData);
+    }, [enabled, webhookUrl, userInfo]);
 };

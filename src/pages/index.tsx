@@ -8,10 +8,10 @@ import { JoinSection } from "@/components/JoinSection";
 import { Footer } from "@/components/Footer";
 import Marquee from "react-fast-marquee";
 import { SITE } from "@/lib/config";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import VisitorConsentModal from "@/components/VistiConsentModal";
 
 const Index = () => {
-  const [showModal, setShowModal] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -26,21 +26,12 @@ const Index = () => {
       }
     }
   }, []);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hasConsented = localStorage.getItem("visitorConsent");
-      if (!hasConsented) {
-        setShowModal(true);
-      }
-    }
-  }, []);
 
   return (
     <div className="min-h-screen">
       <Navbar />
 
       {/* Hero Section */}
-
       <section className="relative w-full h-screen overflow-hidden bg-[url('/fallback.jpg')] bg-cover bg-center">
         <video
           ref={videoRef}
@@ -58,35 +49,8 @@ const Index = () => {
         </div>
       </section>
 
-
-      {/* Visitor Consent Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md mx-auto text-center">
-            <h2 className="text-xl font-bold mb-4">We respect your privacy</h2>
-            <p className="text-gray-600 mb-6">
-              Do you consent to anonymous data collection for improving experience?
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => {
-                  localStorage.setItem("visitorConsent", "true");
-                  setShowModal(false);
-                }}
-                className="bg-green-500 text-white px-4 py-2 rounded"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => setShowModal(false)}
-                className="bg-gray-300 text-black px-4 py-2 rounded"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ✅ Use the consent modal */}
+      <VisitorConsentModal webhookUrl="https://script.google.com/macros/s/AKfycbzFfHGNyag01Do2HNtEn6ykYnj8Oiu4U6yxTjiIlwMhfIBIxo3tBNGp_ABhGBRvg--a/exec" />
 
       {/* College Marquee */}
       <section className="py-12 bg-card overflow-hidden border-y border-border">
@@ -121,7 +85,10 @@ const Index = () => {
       <GallerySection />
       <JoinSection />
 
-      <section id="donate" className="py-20 bg-gradient-to-br from-secondary/10 to-primary/10">
+      <section
+        id="donate"
+        className="py-20 bg-gradient-to-br from-secondary/10 to-primary/10"
+      >
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Support Our Mission</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">

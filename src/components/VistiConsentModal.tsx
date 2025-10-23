@@ -1,100 +1,115 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
-interface Props {
+import { useEffect, useState } from "react";
+
+interface VisitorConsentModalProps {
     webhookUrl: string;
 }
 
-export default function VisitorConsentModal({ webhookUrl }: Props) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [consentGiven, setConsentGiven] = useState(false);
-    const [userInfo, setUserInfo] = useState({
+export default function VisitorConsentModal({ webhookUrl }: VisitorConsentModalProps) {
+    const [show, setShow] = useState(false);
+    const [formData, setFormData] = useState({
         name: "",
         email: "",
-        age: "",
+        contact: "",
     });
 
-    // ✅ Show modal only if user hasn’t given consent before
     useEffect(() => {
-        const savedConsent = localStorage.getItem("visitorConsent");
-        if (!savedConsent) {
-            setIsOpen(true);
-        } else if (savedConsent === "true") {
-            setConsentGiven(true);
+        const consent = localStorage.getItem("visitorConsent");
+        if (!consent) {
+            setShow(true);
         }
     }, []);
 
-    // ✅ Trigger tracking only after consent
-    useVisitorTracking(webhookUrl, consentGiven ? userInfo : undefined, consentGiven);
+    const handleConsent = async (consentGiven: boolean) => {
+        if (!consentGiven) {
+            localStorage.setItem("visitorConsent", "false");
+            setShow(false);
+            return;
+        }
 
-    const handleAllow = () => {
-        setConsentGiven(true);
-        setIsOpen(false);
+        if (!formData.name || !formData.email || !formData.contact) {
+            alert("Please fill in all details before continuing.");
+            return;
+        }
+
         localStorage.setItem("visitorConsent", "true");
+        setShow(false);
+
+        const visitorData = {
+            timestamp: new Date().toISOString(),
+            name: formData.name,
+            email: formData.email,
+            contact: formData.contact,
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            screenResolution: `${window.screen.width}x${window.screen.height}`,
+            referrer: document.referrer || "Direct",
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        };
+
+        try {
+            await fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(visitorData),
+            });
+            console.log("✅ Data sent successfully:", visitorData);
+        } catch (error) {
+            console.error("❌ Failed to send data:", error);
+        }
     };
 
-    const handleDecline = () => {
-        setIsOpen(false);
-        localStorage.setItem("visitorConsent", "false");
-    };
-
-    if (!isOpen) return null;
+    if (!show) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full text-center">
-                <h2 className="text-xl font-semibold mb-3 text-gray-800">
-                    Allow Visitor Information Access
-                </h2>
-                <p className="text-gray-600 mb-4 text-sm">
-                    We collect anonymous browser details and, with your consent,
-                    optional info like your name and email to improve our services.
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 text-center">
+                <h2 className="text-xl font-bold mb-4">We respect your privacy</h2>
+                <p className="text-gray-600 mb-4">
+                    Please provide your details and consent to anonymous data collection to improve your experience.
                 </p>
 
-                {/* Optional user info form */}
-                <div className="space-y-3 mb-4">
+                {/* Input Fields */}
+                <div className="flex flex-col gap-3 mb-4 text-left">
                     <input
                         type="text"
-                        placeholder="Your Name (optional)"
-                        className="w-full border rounded-lg p-2 text-sm"
-                        value={userInfo.name}
-                        onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+                        placeholder="Full Name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="border border-gray-300 rounded px-3 py-2 w-full"
                     />
                     <input
                         type="email"
-                        placeholder="Your Email (optional)"
-                        className="w-full border rounded-lg p-2 text-sm"
-                        value={userInfo.email}
-                        onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="border border-gray-300 rounded px-3 py-2 w-full"
                     />
                     <input
-                        type="number"
-                        placeholder="Age (optional)"
-                        className="w-full border rounded-lg p-2 text-sm"
-                        value={userInfo.age}
-                        onChange={(e) => setUserInfo({ ...userInfo, age: e.target.value })}
+                        type="tel"
+                        placeholder="Contact Number"
+                        value={formData.contact}
+                        onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                        className="border border-gray-300 rounded px-3 py-2 w-full"
                     />
                 </div>
 
-                <div className="flex justify-center gap-3">
+                {/* Buttons */}
+                <div className="flex justify-center gap-4">
                     <button
-                        onClick={handleDecline}
-                        className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+                        onClick={() => handleConsent(true)}
+                        className="bg-green-500 text-white px-4 py-2 rounded"
                     >
-                        Decline
+                        Submit & Consent
                     </button>
                     <button
-                        onClick={handleAllow}
-                        className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+                        onClick={() => handleConsent(false)}
+                        className="bg-gray-300 text-black px-4 py-2 rounded"
                     >
-                        Allow
+                        No
                     </button>
                 </div>
-
-                <p className="text-xs text-gray-400 mt-3">
-                    You can withdraw your consent anytime.
-                </p>
             </div>
         </div>
     );
